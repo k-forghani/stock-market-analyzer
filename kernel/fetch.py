@@ -22,19 +22,25 @@ def remove_holidays (start_date: Tuple[int, int, int], end_date: Tuple[int, int,
 
 @logger.catch
 def fetch_excel (date: jdatetime.date, stage_dir: Path) -> None:
-    respone = requests.get(
-        URL.format(
-            year = date.year,
-            month = date.month,
-            day = date.day
+    try:
+        respone = requests.get(
+            URL.format(
+                year = date.year,
+                month = date.month,
+                day = date.day
+            )
         )
-    )
+    except Exception as e:
+        logger.error(f"An error occurred during fetching excel file: {e}")
 
     name = f"{date.year}-{date.month:02}-{date.day:02}"
     excel_path = stage_dir / f"{name}.xlsx"
     
-    with excel_path.open("wb") as handler:
-        handler.write(respone.content)
+    try:
+        with excel_path.open("wb") as handler:
+            handler.write(respone.content)
+    except Exception as e:
+        logger.error(f"An error occurred during saving excel file: {e}")
     
     logger.info(f"Fetched {name}.")
 
@@ -49,4 +55,4 @@ def download_excels (start_date: Tuple[int, int, int], end_date: Tuple[int, int,
     for date in dates:
         fetch_excel(date, stage_dir)
     
-    logger.info("Everything has been fetched successfully!")
+    logger.success("Everything has been fetched successfully.")

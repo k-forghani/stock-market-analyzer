@@ -29,13 +29,13 @@ def excel_to_csv (excel_file: Path, csv_file: Path) -> bool:
     except Exception as e:
         raise Exception(f"An error occurred during saving the file: {e}")
 
-    logger.log(f"Converted {excel_file.name}.")
+    logger.info(f"Converted {excel_file.name}.")
     
     return True
 
 
 @logger.catch
-def clean (stage_dir: str, datalake_dir: str, clean_stage: bool) -> None:
+def convert (stage_dir: str, datalake_dir: str, clean_stage: bool) -> None:
     stage_dir = Path(stage_dir)
     if not stage_dir.is_dir():
         raise Exception("Not a directory!")
@@ -53,10 +53,10 @@ def clean (stage_dir: str, datalake_dir: str, clean_stage: bool) -> None:
         )
     ]
 
-    logger.log("Converted all excel files into csv files.")
+    logger.success("Converted all excel files into csv files.")
 
     if clean_stage:
         for excel_file in excel_files:
             excel_file.unlink()
 
-    logger.log("Deleted all excel files.")
+    logger.success("Deleted all excel files.")

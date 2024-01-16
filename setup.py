@@ -9,7 +9,11 @@ setup(
         "rich-click",
         "tqdm",
         "loguru",
-        "jdatetime"
+        "jdatetime",
+        "Pandas",
+        "openpyxl",
+        "tabulate",
+        "rich"
     ],
     entry_points = {
         "console_scripts": [
