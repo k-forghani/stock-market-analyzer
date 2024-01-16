@@ -19,3 +19,5 @@ pip3 install --editable .
     - jdatetime==4.1.1
     - Pandas=2.1.4
     - openpyxl=3.1.2
+    - tabulate=0.9.0
+    - rich==3.0.0

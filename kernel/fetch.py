@@ -36,7 +36,7 @@ def fetch_excel (date: jdatetime.date, stage_dir: Path) -> None:
     with excel_path.open("wb") as handler:
         handler.write(respone.content)
     
-    logger.success(f"Saved {name}.")
+    logger.info(f"Fetched {name}.")
 
 
 @logger.catch
@@ -49,4 +49,4 @@ def download_excels (start_date: Tuple[int, int, int], end_date: Tuple[int, int,
     for date in dates:
         fetch_excel(date, stage_dir)
     
-    logger.success("Everything is downloaded successfully!")
+    logger.info("Everything has been fetched successfully!")

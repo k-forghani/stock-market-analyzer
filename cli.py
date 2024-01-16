@@ -1,9 +1,10 @@
-from pathlib import Path
+import jdatetime
 
 import rich_click as click
 from loguru import logger
 
 import kernel
+import generic
 
 
 # References:
@@ -20,7 +21,7 @@ CONTEXT_SETTINGS = dict(help_option_names = ["-h", "--help"])
 
 @click.group(
     context_settings = CONTEXT_SETTINGS,
-    epilog = "Check out README.md for more details.",
+    epilog = "",
     help = f"Stock Market Analyzer {kernel.__version__} ({kernel.__status__})\n\n{kernel.__copyright__} {kernel.__license__}."
 )
 @click.version_option(
@@ -31,51 +32,38 @@ def cli ():
     
     An analysis tool for stock market data.
     """
+
     pass
-
-
-
-def validate_date (ctx, param, value):
-    if isinstance(value, tuple):
-        return value
-
-    try:
-        year, month, day = value.split("-")
-        return int(year), int(month), int(day)
-    except ValueError:
-        logger.error("Invalid date!")
-        raise click.BadParameter("Invalid date!")
-
 
 
 @cli.command(
     context_settings = CONTEXT_SETTINGS,
-    epilog = "Check out README.md for more details."
+    epilog = ""
 )
 @click.option(
-    "--stage-directory", "-cwd",
+    "--stage-directory",
     required = True,
     prompt = "Enter stage directory",
     type = click.Path(exists = False, file_okay = False, dir_okay = True),
     help = "Stage directory"
 )
 @click.option(
-    "--start-date", "-sd",
-    default = "1402-10-18",
+    "--start-date",
+    default = (jdatetime.date.today() - jdatetime.timedelta(days = 7)).strftime("%Y-%m-%d"),
     show_default = True,
-    prompt = "Enter the starting date",
+    prompt = "Enter the start date",
     type = click.UNPROCESSED,
-    callback = validate_date,
-    help = "Starting date"
+    callback = generic.validate_date,
+    help = "Start date"
 )
 @click.option(
     "--end-date", "-nd",
-    default = "1402-10-24",
+    default = jdatetime.date.today().strftime("%Y-%m-%d"),
     show_default = True,
-    prompt = "Enter the ending date",
+    prompt = "Enter the end date",
     type = click.UNPROCESSED,
-    callback = validate_date,
-    help = "Ending date"
+    callback = generic.validate_date,
+    help = "End date"
 )
 def fetch (*args, **kwargs):
     """Fetching data.
@@ -92,10 +80,10 @@ def fetch (*args, **kwargs):
 
 @cli.command(
     context_settings = CONTEXT_SETTINGS,
-    epilog = "Check out README.md for more details."
+    epilog = ""
 )
 @click.option(
-    "--stage-directory", "-sd",
+    "--stage-directory",
     required = True,
     prompt = "Enter stage directory",
     type = click.Path(exists = True, file_okay = False, dir_okay = True),
@@ -106,26 +94,48 @@ def fetch (*args, **kwargs):
     required = True,
     prompt = "Enter datalake directory",
     type = click.Path(exists = False, file_okay = False, dir_okay = True),
-    help = "Datelake directory"
+    help = "Datalake directory"
 )
 @click.option(
-    "--delete-excels",
+    "--clean-stage",
     is_flag = True,
     default = True,
     show_default = True,
-    prompt = "Delete excels or not",
-    help = "Delete excels or not"
+    prompt = "Clean stage or not",
+    help = "Clean stage or not"
 )
-def clean (*args, **kwargs):
-    """Cleaning data.
+def convert (*args, **kwargs):
+    """Converting data.
     """
 
     logger.info(f"Config: {kwargs}")
 
-    kernel.clean.clean(
+    kernel.convert.convert(
         stage_dir = kwargs["stage_directory"],
         datalake_dir = kwargs["datalake_directory"],
-        delete_excels = kwargs["delete_excels"]
+        clean_stage = kwargs["clean_stage"]
+    )
+
+
+@cli.command(
+    context_settings = CONTEXT_SETTINGS,
+    epilog = ""
+)
+@click.option(
+    "--datalake-directory",
+    required = True,
+    prompt = "Enter datalake directory",
+    type = click.Path(exists = False, file_okay = False, dir_okay = True),
+    help = "Datalake directory"
+)
+def analyze (*args, **kwargs):
+    """Analyzing data.
+    """
+
+    logger.info(f"Config: {kwargs}")
+
+    kernel.analyze.analyze(
+        datalake_dir = kwargs["datalake_directory"]
     )
 
 
