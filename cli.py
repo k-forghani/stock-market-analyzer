@@ -77,10 +77,8 @@ def validate_date (ctx, param, value):
     help = "Ending date"
 )
 def fetch (*args, **kwargs):
-    """Fetching data from.
+    """Fetching data.
     """
-
-    pass
 
     logger.info(f"Config: {kwargs}")
 
@@ -90,6 +88,44 @@ def fetch (*args, **kwargs):
         stage_dir = kwargs["stage_directory"]
     )
 
+
+@cli.command(
+    context_settings = CONTEXT_SETTINGS,
+    epilog = "Check out README.md for more details."
+)
+@click.option(
+    "--stage-directory", "-sd",
+    required = True,
+    prompt = "Enter stage directory",
+    type = click.Path(exists = True, file_okay = False, dir_okay = True),
+    help = "Stage directory"
+)
+@click.option(
+    "--datalake-directory", "-dd",
+    required = True,
+    prompt = "Enter datalake directory",
+    type = click.Path(exists = False, file_okay = False, dir_okay = True),
+    help = "Datelake directory"
+)
+@click.option(
+    "--delete-excels",
+    is_flag = True,
+    default = True,
+    show_default = True,
+    prompt = "Delete excels or not",
+    help = "Delete excels or not"
+)
+def clean (*args, **kwargs):
+    """Cleaning data.
+    """
+
+    logger.info(f"Config: {kwargs}")
+
+    kernel.clean.clean(
+        stage_dir = kwargs["stage_directory"],
+        datalake_dir = kwargs["datalake_directory"],
+        delete_excels = kwargs["delete_excels"]
+    )
 
 
 if __name__ == "__main__":

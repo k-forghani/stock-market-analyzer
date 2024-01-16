@@ -18,3 +18,4 @@ pip3 install --editable .
     - Loguru==0.7.2
     - jdatetime==4.1.1
     - Pandas=2.1.4
+    - openpyxl=3.1.2

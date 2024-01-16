@@ -14,3 +14,4 @@ __maintainer__ = "Kazem Forghani"
 __status__ = "Development"
 
 from . import fetch
+from . import clean
