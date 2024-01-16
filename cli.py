@@ -10,7 +10,8 @@ import kernel
 # https://click.palletsprojects.com/en/8.1.x/options/
 # https://github.com/ewels/rich-click
 
-logger.add("info.log")
+logger.add("error.log", filter = lambda record: record["level"].name == "ERROR")
+logger.add("info.log", filter = lambda record: record["level"].name != "ERROR")
 
 click.rich_click.USE_MARKDOWN = True
 
